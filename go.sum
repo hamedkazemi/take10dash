@@ -212,8 +212,13 @@ github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c/go.mod h1:lB8K/P019DLNhe
 github.com/xdg/stringprep v1.0.0/go.mod h1:Jhud4/sHMO4oL310DaZAKk9ZaJ08SJfe+sJh0HrGL1Y=
 github.com/yuin/goldmark v1.1.27/go.mod h1:3hX8gzYuyVAZsxl0MRgGTJEmQBFcNTphYh9decYSb74=
 gitlab.com/kafa1942/take10dashboard v0.0.0-20200425122708-8a9cb13f67e4 h1:2wmTLrjz4zBiE0n5mgNnDiXjzzvzsoJ+bfYuwofAwaA=
+gitlab.com/kafa1942/take10dashboard v0.0.0-20200425123241-974c90947003 h1:op/fypY2gAO5Xhdew3pPk/XWbuJZ12yvaujzzW7Oyq8=
 gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425122708-8a9cb13f67e4 h1:2bJnntZCOdPPmD2aOTflkMKWlC0drBHf/gqjnya8yPA=
 gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425122708-8a9cb13f67e4/go.mod h1:cK+B9GI9dva9+q/p1Xp6b/7AiEP+Mu5FikADSg3Wzic=
+gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425123241-974c90947003 h1:/dwV/UBdbQN+JY/w7jmPMppfaTYD8FsDl04A8mBI2Nc=
+gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425123241-974c90947003/go.mod h1:cK+B9GI9dva9+q/p1Xp6b/7AiEP+Mu5FikADSg3Wzic=
+gitlab.com/kafa1942/take10dashboard/users v0.0.0-20200425123241-974c90947003 h1:FekYafsDmTr0VBpgkW9C06l0lrqgwcRJGrSXVTGnVjc=
+gitlab.com/kafa1942/take10dashboard/users v0.0.0-20200425123241-974c90947003/go.mod h1:4LBdhm+qDM4WnxsKrjEKWSoeiErfSevb+nBvEPH/pxk=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190325154230-a5d413f7728c/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20190506204251-e1dfcc566284/go.mod h1:yigFU9vqHzYiE8UmvKecakEJjdnWj3jj499lnFckfCI=

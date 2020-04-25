@@ -24,7 +24,8 @@ require (
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.6.5
 	github.com/urfave/cli v1.22.4 // indirect
-	gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425122708-8a9cb13f67e4 // indirect
+	gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425123241-974c90947003 // indirect
+	gitlab.com/kafa1942/take10dashboard/users v0.0.0-20200425123241-974c90947003 // indirect
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5
 	golang.org/x/net v0.0.0-20200421231249-e086a090c8fd // indirect
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
