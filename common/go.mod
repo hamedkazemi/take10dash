@@ -1,4 +1,4 @@
-module take10dashboard/common
+module gitlab.com/kafa1942/take10dashboard/common
 
 go 1.13
 
