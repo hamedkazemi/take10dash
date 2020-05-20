@@ -5,34 +5,20 @@ import (
 )
 
 func ConfigGinRouter(router gin.IRoutes) {
-	configGinAnswersRouter(router)
-	configGinAnswersTypesRouter(router)
 	configGinCategoriesRouter(router)
 	configGinQuestionsRouter(router)
-	configGinQuestionsTypesRouter(router)
 	return
 }
 
-func configGinAnswersRouter(router gin.IRoutes) {
-	router.GET("/answers", GetAllAnswers)
-	router.POST("/answers", AddAnswer)
-	router.GET("/answers/:id", GetAnswer)
-	router.PUT("/answers/:id", UpdateAnswer)
-	router.DELETE("/answers/:id", DeleteAnswer)
-}
-
-func configGinAnswersTypesRouter(router gin.IRoutes) {
-	//
-}
-
 func configGinCategoriesRouter(router gin.IRoutes) {
-	//
+	router.GET("/categories", GetAllCategories)
 }
 
 func configGinQuestionsRouter(router gin.IRoutes) {
-	//
-}
+	router.GET("/questions", GetAllQuestions)
+	router.GET("/questions/:id", GetQuestion)
+	router.PATCH("/questions", UpdateQuestion)
+	router.POST("/questions", CreateQuestion)
+	router.DELETE("/questions", DeleteQuestion)
 
-func configGinQuestionsTypesRouter(router gin.IRoutes) {
-	//
 }
