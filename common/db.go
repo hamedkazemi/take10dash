@@ -15,11 +15,11 @@ var onceDb sync.Once
 // GormLogger is a custom logger for Gorm, making it use logrus.
 type GormLogger struct{}
 
-// Print handles log events from Gorm for the custom logger.
+// Print handles log events from Gorm for the custom logrus.
 func (*GormLogger) Print(v ...interface{}) {
 	switch v[0] {
 	case "sql":
-		logger.WithFields(
+		logrus.WithFields(
 			logrus.Fields{
 				"module":  "gorm",
 				"type":    "sql",
@@ -29,7 +29,7 @@ func (*GormLogger) Print(v ...interface{}) {
 			},
 		).Debug(v[3])
 	case "log":
-		logger.WithFields(logrus.Fields{"module": "gorm", "type": "log"}).Print(v[2])
+		logrus.WithFields(logrus.Fields{"module": "gorm", "type": "log"}).Print(v[2])
 	}
 }
 
@@ -43,7 +43,7 @@ func GetDB() *gorm.DB {
 		err := retry(3, time.Second*20, func() error {
 			dbConnection, connectionError = gorm.Open("mysql", dbConfig+"?charset=utf8&parseTime=True&loc=Local")
 			if connectionError != nil {
-				logger.WithFields(logrus.Fields{
+				logrus.WithFields(logrus.Fields{
 					"Connection Error": connectionError,
 				}).Warn(dbConfig + " Failed to connect, trying again in 15 sec ...")
 				return connectionError
@@ -51,11 +51,11 @@ func GetDB() *gorm.DB {
 			return nil
 		})
 
-		dbConnection.SetLogger(&GormLogger{}) // setting our custom logger
+		//dbConnection.SetLogger(&GormLogger{}) // setting our custom logger
 		dbConnection.LogMode(Config.Database.Debug)
 		dbConnection.Set("gorm:auto_preload", true)
 		if err != nil {
-			logger.Fatal(err)
+			logrus.Fatal(err)
 		}
 		instance = dbConnection
 		//defer dbConnection.Close() // closed in main.app
