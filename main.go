@@ -3,11 +3,18 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/sirupsen/logrus"
 	"github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	"gitlab.com/kafa1942/take10dashboard/common"
 	"gitlab.com/kafa1942/take10dashboard/docs"
 	"gitlab.com/kafa1942/take10dashboard/users"
+	"net"
+	"net/http"
+	"net/url"
+	"os"
+	"take10dashboard/questions"
+	"time"
 )
 
 // migration function, used to migrate modules models if needed
@@ -16,9 +23,10 @@ func Migrate(db *gorm.DB) {
 }
 
 func main() {
-	
-	// swagger documentation information, to change and see 
-	// other configuration see doc.go 
+	logrus.Info("API system loading ...")
+
+	// swagger documentation information, to change and see
+	// other configuration see doc.go
 	docs.SwaggerInfo.Title = common.Config.App.Name
 	docs.SwaggerInfo.Description = common.Config.App.Description
 	docs.SwaggerInfo.Version = "1.0"
@@ -26,21 +34,29 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/v1"
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
+	// set proxy for outgoing requests ( if needed )
+	setProxy()
+
+	// use kafka client
+	//common.KafkaCon()
+
 	// init database and Migrate if needed
 	db := common.GetDB()
+	logrus.Info("Migrating db if needed...")
 	Migrate(db)
 	defer db.Close()
 
 	// init gin router
 	r := gin.Default()
+	r.Use(CORS())
 
 	v1 := r.Group("/api/v1")
 	{
+		questions.ConfigGinRouter(v1)
 		users.UsersRegister(v1.Group("/users"))
 		v1.Use(users.AuthMiddleware(true))
 		users.UserRegister(v1.Group("/user"))
 	}
-	
 	// health check
 	healthCheck := r.Group("/api/ping")
 
@@ -53,5 +69,51 @@ func main() {
 	// swagger docs files , TODO only for staging and development environments, add condition
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	_ = r.Run() // listen and serve on 0.0.0.0:8080
+	logrus.Info("APP will be served at: " + common.Config.App.Host)
+	_ = r.Run(common.Config.App.Host)
+}
+
+func setProxy() {
+	getProxy := ""
+	if os.Getenv("HTTP_PROXY") != "" {
+		getProxy = os.Getenv("HTTP_PROXY")
+	} else {
+		getProxy = common.Config.App.Proxy
+	}
+
+	proxyUrl, err := url.Parse(getProxy)
+	if err != nil {
+		logrus.Error("the URL of Proxy is wrong.")
+		logrus.Panic("the URL of Proxy is wrong, please check config.toml file.")
+	}
+
+	http.DefaultTransport = &http.Transport{
+		DialContext: (&net.Dialer{
+			Timeout:   30 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+		Proxy:                 http.ProxyURL(proxyUrl),
+	}
+}
+
+func CORS() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if c.Request.Method != "OPTIONS" {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Credentials", "true")
+			c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+			c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
+			c.Next()
+		} else {
+			c.Header("Access-Control-Allow-Origin", "*")
+			c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+			c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+			c.Header("Content-Type", "application/json")
+			c.AbortWithStatus(http.StatusOK)
+		}
+	}
 }
