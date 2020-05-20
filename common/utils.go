@@ -143,7 +143,7 @@ func ConverHttprouterToGin(f httprouter.Handle) gin.HandlerFunc {
 }
 
 // Read Integer From String
-func readInt(r *http.Request, param string, v int64) (int64, error) {
+func ReadInt(r *http.Request, param string, v int64) (int64, error) {
 	p := r.FormValue(param)
 	if p == "" {
 		return v, nil
@@ -153,7 +153,7 @@ func readInt(r *http.Request, param string, v int64) (int64, error) {
 }
 
 // Write Json
-func writeJSON(w http.ResponseWriter, v interface{}) {
+func WriteJSON(w http.ResponseWriter, v interface{}) {
 	data, _ := json.Marshal(v)
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.Header().Set("Cache-Control", "no-cache")
@@ -161,11 +161,36 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 }
 
 // Read Json
-func readJSON(r *http.Request, v interface{}) error {
+func ReadJSON(r *http.Request, v interface{}) error {
 	buf, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return err
 	}
 
 	return json.Unmarshal(buf, v)
+}
+
+// Common API models for using across different APIs
+
+type MetaData struct {
+	Filters    []Filter   `json:"filters"`
+	Pagination Pagination `json:"pagination"`
+	Order      Order      `json:"order"`
+}
+
+type Filter struct {
+	Field    string `json:"field"`
+	Value    string `json:"value"`
+	Operator string `json:"operator"`
+}
+
+type Order struct {
+	OrderBy   string `json:"orderBy"`
+	OrderType string `json:"orderType"`
+}
+
+type Pagination struct {
+	Limit  int `json:"limit"`
+	Offset int `json:"offset"`
+	Count  int `json:"count"`
 }
