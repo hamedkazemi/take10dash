@@ -8,13 +8,14 @@
 ├── common
 │   ├── utils.go       // small tools function
 │   └── db.go          // DB connect manager
-│   └── logger.go      // logrus log manager instance
+│   └── logrus.go      // logrus log manager instance
 │   └── kafka.go       // kafka conenction manager
 │   └── config.go      // configuration manager
-└── users
+└── moduleName
+    ├── controller.go   // controllers functions used by router
     ├── models.go       // data models define & DB operation
     ├── serializers.go  // response computing & format
-    ├── routers.go      // business logic & router binding
+    ├── routers.go      // router binding
     ├── middlewares.go  // put the before & after logic of handle request
     └── validators.go   // form/json checker
 ```
@@ -27,7 +28,7 @@ https://golang.org/doc/install
 make sure your ~/.*shrc have those varible:
 ```
 ➜  echo $GOPATH
-/Users/zitwang/test/
+/Users/[user]/test/
 ➜  echo $GOROOT
 /usr/local/go/
 ➜  echo $PATH
