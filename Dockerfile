@@ -15,7 +15,7 @@ RUN apk add --no-cache ca-certificates git
 
 # container to run the process as an unprivileged user.
 # Create a netrc file using the credentials specified using --build-arg
-RUN git config --global url."https://hamed.kazemi:XGmoxAMNZyCS_xnXVo1P@git.pinsvc.net".insteadof https://git.pinsvc.net
+#RUN git config --global url."https://hamed.kazemi:XGmoxAMNZyCS_xnXVo1P@git.pinsvc.net".insteadof https://git.pinsvc.net
 # Set the working directory outside $GOPATH to enable the support for modules.
 # Working directory outside $GOPATH
 WORKDIR /src
