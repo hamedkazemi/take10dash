@@ -1,7 +1,7 @@
 [database]
 server = "127.0.0.1" # Mysql Database Server
 port = "3306" # Mysql Database Port
-database = "take10dashboard" # Mysql Database Name
+database = "take10dashboardFull" # Mysql Database Name
 user = "root" # Mysql Database User
 password = "root" # Mysql Database Password
 debug = true # Mysql Database Debug

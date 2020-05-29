@@ -13,6 +13,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"take10dashboard/gameusers"
+	"take10dashboard/promotions"
 	"take10dashboard/questions"
 	"time"
 )
@@ -48,15 +50,15 @@ func main() {
 
 	// init gin router
 	r := gin.Default()
-	r.Use(CORS())
-
+	r.Use(common.CORS())
 	v1 := r.Group("/api/v1")
 	{
 		questions.ConfigGinRouter(v1)
-		users.UsersRegister(v1.Group("/users"))
-		v1.Use(users.AuthMiddleware(true))
-		users.UserRegister(v1.Group("/user"))
+		users.ConfigGinRouter(v1)
+		gameusers.ConfigGinRouter(v1)
+		promotions.ConfigGinRouter(v1)
 	}
+
 	// health check
 	healthCheck := r.Group("/api/ping")
 
@@ -97,23 +99,5 @@ func setProxy() {
 		TLSHandshakeTimeout:   10 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
 		Proxy:                 http.ProxyURL(proxyUrl),
-	}
-}
-
-func CORS() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		if c.Request.Method != "OPTIONS" {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Credentials", "true")
-			c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-			c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT, DELETE")
-			c.Next()
-		} else {
-			c.Header("Access-Control-Allow-Origin", "*")
-			c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
-			c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-			c.Header("Content-Type", "application/json")
-			c.AbortWithStatus(http.StatusOK)
-		}
 	}
 }
