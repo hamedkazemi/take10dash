@@ -54,7 +54,7 @@ type QuestionsType struct {
 	ID         int         `gorm:"column:id;primary_key" json:"id"`
 	QuestionID int         `gorm:"column:questionID" json:"questionID"`
 	TextType   null.String `gorm:"column:textType" json:"textType"`
-	ImageType  null.String `gorm:"column:imageType" json:"imageType"`
+	ImageType  string      `gorm:"column:imageType" json:"imageType"`
 }
 
 // TableName sets the insert table name for this struct type

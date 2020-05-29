@@ -4,21 +4,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func ConfigGinRouter(router gin.IRoutes) {
+func ConfigGinRouter(router *gin.RouterGroup) {
+	// categories route
 	configGinCategoriesRouter(router)
-	configGinQuestionsRouter(router)
-	return
+
+	// question module group
+	r := router.Group("/questions")
+	{
+		configGinQuestionsRouter(r)
+	}
+
 }
 
 func configGinCategoriesRouter(router gin.IRoutes) {
-	router.GET("/categories", GetAllCategories)
+	router.GET("/categories/", GetAllCategories)
+	router.GET("/stats/questions/", GetStatistics)
 }
 
 func configGinQuestionsRouter(router gin.IRoutes) {
-	router.GET("/questions", GetAllQuestions)
-	router.GET("/questions/:id", GetQuestion)
-	router.PATCH("/questions", UpdateQuestion)
-	router.POST("/questions", CreateQuestion)
-	router.DELETE("/questions", DeleteQuestion)
-
+	// routes
+	router.GET("/", GetAllQuestions)
+	router.GET("/:id", GetQuestion)
+	router.PATCH("/", UpdateQuestion)
+	router.POST("/", CreateQuestion)
+	router.DELETE("/", DeleteQuestion)
 }

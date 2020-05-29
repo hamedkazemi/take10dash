@@ -88,6 +88,17 @@ type CategoriesResponse struct {
 	Value int    `json:"value"`
 }
 
+type QuestionStatsResponse struct {
+	CategoryTitle string `gorm:"column:category" json:"categoryTitle"`
+	Text          int    `gorm:"column:textcount" json:"text"`
+	Picture       int    `gorm:"column:picturecount" json:"picture"`
+	LevelOne      int    `gorm:"column:level1" json:"level1"`
+	LevelTwo      int    `gorm:"column:level2" json:"level2"`
+	LevelThree    int    `gorm:"column:level3" json:"level3"`
+	LevelFour     int    `gorm:"column:level4" json:"level4"`
+	LevelFive     int    `gorm:"column:level5" json:"level5"`
+}
+
 func (s *AnswerSerializer) Response() AnswerResponse {
 	isCorrect := false
 	if s.CorrectAnswer == "true" {
@@ -125,7 +136,9 @@ func (s *QuestionSerializer) Response() QuestionResponse {
 	if s.QuestionTypeID == "text" {
 		questionContext = s.QuestionType.TextType
 	} else {
-		questionContext = s.QuestionType.ImageType
+		var imt null.String
+		_ = imt.Scan(s.QuestionType.ImageType)
+		questionContext = imt
 	}
 	AnswersSerializer := AnswersSerializer{s.C, s.Answers}
 	response := QuestionResponse{

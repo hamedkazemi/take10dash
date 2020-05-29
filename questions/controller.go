@@ -171,12 +171,19 @@ func UpdateQuestion(c *gin.Context) {
 	question.QuestionDiffType = input.QuestionDifficulty
 	question.QuestionTypeID = input.QuestionType
 	question.Status = input.Status
+
 	question.UpdateAt = time.Now()
 
 	if question.QuestionTypeID == "text" {
+		question.QuestionType.QuestionID = input.ID
 		question.QuestionType.TextType = input.QuestionContext
+		question.QuestionType.ImageType = ""
 	} else {
-		question.QuestionType.ImageType = input.QuestionContext
+		question.QuestionType.QuestionID = input.ID
+		if input.QuestionContext.Valid { // bad database design
+			question.QuestionType.ImageType = input.QuestionContext.String
+		}
+		question.QuestionType.TextType = null.String{}
 	}
 
 	// get answers
@@ -204,7 +211,7 @@ func UpdateQuestion(c *gin.Context) {
 
 	}
 
-	err := common.GetDB().Set("gorm:association_autoupdate", false).Save(&question).Error
+	err := common.GetDB().Set("gorm:association_autoupdate", true).Save(&question).Error
 	if err != nil {
 		logrus.Error("Update Question", err)
 		c.JSON(http.StatusNotFound, common.NewError("Update Question", errors.New("Something went wrong!")))
@@ -241,4 +248,28 @@ func DeleteQuestion(c *gin.Context) {
 		}
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Question Deleted Successfully"})
+}
+
+func GetStatistics(c *gin.Context) {
+	// Raw SQL
+	var StatResponse []QuestionStatsResponse
+	rows, err := common.GetDB().Select("category.name as category,(SELECT COUNT(*) FROM `Question` WHERE `questionType` = 'text' AND category = category.id) as textcount,(SELECT COUNT(*) FROM `Question` WHERE `questionType` = 'picture' AND category = category.id) as picturecount,(SELECT COUNT(*) FROM `Question` WHERE `questionDiffType` = 1 AND category = category.id) as level1,(SELECT COUNT(*) FROM `Question` WHERE `questionDiffType` = 2 AND category = category.id) as level2,(SELECT COUNT(*) FROM `Question` WHERE `questionDiffType` = 3 AND category = category.id) as level3,(SELECT COUNT(*) FROM `Question` WHERE `questionDiffType` = 4 AND category = category.id) as level4,(SELECT COUNT(*) FROM `Question` WHERE `questionDiffType` = 5 AND category = category.id) as level5").Table("category").Rows() // (*s
+	if err != nil {
+		logrus.Error("Question Stat", err.Error)
+		c.JSON(http.StatusOK, gin.H{"message": "Can't get stats, see the logs for more information."})
+		return
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var stat QuestionStatsResponse
+		err := common.GetDB().ScanRows(rows, &stat)
+		fmt.Println(stat)
+		StatResponse = append(StatResponse, stat)
+		if err != nil {
+			logrus.Error("Question Stat", err.Error)
+			return
+		}
+	}
+	c.JSON(http.StatusOK, gin.H{"data": StatResponse})
+
 }
