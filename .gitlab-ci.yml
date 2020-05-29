@@ -1,0 +1,15 @@
+stages:
+  - build
+build:
+  stage: build
+  image: golang:1.13.8
+  before_script:
+    # Create a symbolic link under $GOPATH, this is needed for local build
+    # i.e. /go/src/gitlab.com/ykyuen/gitlab-ci-go-build
+    - git config --global url."https://hamed.kazemi:XGmoxAMNZyCS_xnXVo1P@git.pinsvc.net".insteadof https://git.pinsvc.net
+  script:
+    - docker image prune -f
+    - docker-compose -f docker-compose.yml build --no-cache
+    - docker-compose -f docker-compose.yml up -d
+  only:
+    - production
