@@ -9,3 +9,5 @@ require (
 	gitlab.com/kafa1942/take10dashboard/common v0.0.0-20200425123241-974c90947003
 	golang.org/x/crypto v0.0.0-20200423211502-4bdfaf469ed5
 )
+
+replace gitlab.com/kafa1942/take10dashboard/common => ../common

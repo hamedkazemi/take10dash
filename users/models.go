@@ -3,8 +3,8 @@ package users
 import (
 	"errors"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 	"gitlab.com/kafa1942/take10dashboard/common"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Models should only be concerned with database schema, more strict checking should be put in validator.
@@ -19,12 +19,16 @@ type UserModel struct {
 	Bio          string  `gorm:"column:bio;size:1024"`
 	Image        *string `gorm:"column:image"`
 	PasswordHash string  `gorm:"column:password;not null"`
+	Rule         string  `gorm:"column:rule;not null;DEFAULT:'public'"`
+}
+
+func (a *UserModel) TableName() string {
+	return "dashboard_users"
 }
 
 // Migrate the schema of database if needed
 func AutoMigrate() {
-	db := common.GetDB()
-	db.AutoMigrate(&UserModel{})
+	common.GetDB().AutoMigrate(&UserModel{})
 }
 
 // What's bcrypt? https://en.wikipedia.org/wiki/Bcrypt

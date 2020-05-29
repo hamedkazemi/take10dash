@@ -24,7 +24,7 @@ func (self *UserSerializer) Response() UserResponse {
 		Email:    myUserModel.Email,
 		Bio:      myUserModel.Bio,
 		Image:    myUserModel.Image,
-		Token:    common.GenToken(myUserModel.ID),
+		Token:    common.GenToken(myUserModel.ID, myUserModel.Rule),
 	}
 	return user
 }
